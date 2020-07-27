@@ -1,10 +1,11 @@
-import Url_str, time, urllib, os, glob, openpyxl, PIL
+import Url_str, Text_file_wr, time, urllib, os, glob, openpyxl, PIL
 from pyquery import PyQuery as pq
 
 class Main:
     url_str = Url_str.Url_str()
-
     urls = url_str.getUrls()
+
+    text_file_wr = Text_file_wr.Text_file_wr()
 
     def getImg(self):
         cnt = 1
@@ -17,6 +18,8 @@ class Main:
             wb.save(self.url_str.excelDataPath)
         else:
             wb = openpyxl.load_workbook(self.url_str.excelDataPath)
+
+        resultItemStr = []
 
         for url in self.urls:
             time.sleep(3)
@@ -34,6 +37,7 @@ class Main:
                 if not pq(img).attr('src') == 'None':
                     resultItem['alt'] = pq(img).attr('alt')
                     resultItem['img'] = pq(img).attr('src')
+                    resultItemStr.append(resultItem['alt'])
                     print(resultItem)
 
                     imgPath = os.path.join('../img/', resultItem['img'].replace(self.url_str.delImgPath, ''))
@@ -52,6 +56,8 @@ class Main:
                         wb.save(self.url_str.excelDataPath)
 
                         cnt+=1
+
+        self.text_file_wr.fileWrite(self.url_str.actNameDataPath, resultItemStr)
 
 
 main = Main()
