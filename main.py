@@ -26,9 +26,9 @@ class Main:
                 resultItem = {}
 
                 if not pq(img).attr('src') == 'None':
-                    resultItem['alt'] = pq(img).attr('alt')
-                    resultItem['img_src'] = '<img src="../img/' + pq(img).attr('src').replace(self.url_str.delImgPath, '') + '">'
-                    resultItem['img'] = pq(img).attr('src')
+                    resultItem['alt'] = pq(img).attr('alt').strip()
+                    resultItem['img_src'] = '<img src="../img/' + pq(img).attr('src').replace(self.url_str.delImgPath, '').strip() + '">'
+                    resultItem['img'] = pq(img).attr('src').strip()
 
                     resultItems.append(resultItem)
 

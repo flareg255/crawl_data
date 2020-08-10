@@ -16,6 +16,7 @@ class File_wr:
             with urllib.request.urlopen(url) as web_file:
                 data = web_file.read()
                 with open(dst_path, mode='wb') as local_file:
+                    print(dst_path)
                     local_file.write(data)
         except urllib.error.URLError as e:
             print(e)
