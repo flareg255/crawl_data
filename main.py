@@ -1,4 +1,4 @@
-import Url_str, Text_file_wr, time, urllib, os, glob
+import Url_str, File_wr, MkdirDaily, time, urllib, os, glob
 import pandas as pd
 from pyquery import PyQuery as pq
 
@@ -6,15 +6,18 @@ class Main:
     url_str = Url_str.Url_str()
     urls = url_str.getUrls()
 
-    text_file_wr = Text_file_wr.Text_file_wr()
+    mkdirDaily = MkdirDaily.MkdirDaily()
+
+    file_wr = File_wr.File_wr()
 
     def getImg(self):
-        cnt = 1
+
+        dirPaths = self.mkdirDaily.mkdirMake()
 
         resultItems = []
 
         for url in self.urls:
-            time.sleep(3)
+            time.sleep(2)
 
             data = pq(url)
             data = data(self.url_str.itemGroup)('li')('a')('img')
@@ -31,18 +34,12 @@ class Main:
 
                     print(resultItem)
 
-                    try:
-                        urllib.request.urlretrieve(resultItem['img'], self.url_str.imgDataPath)
-                    except BaseException as e:
-                        print(resultItem['img'])
-                        print(e)
-
-                    cnt+=1
+                    self.file_wr.download_file_to_dir(resultItem['img'], dirPaths[1])
 
         df = pd.DataFrame(resultItems)
-        df.to_html(self.url_str.actNameDataPath, escape=False)
+        df.to_html(os.path.join(dirPaths[0], self.url_str.nameHtmlPath), escape=False)
         df = df.drop('img_src', axis=1)
-        df.to_csv(self.url_str.imgDataPath, header=False, index=False)
+        df.to_csv(os.path.join(dirPaths[0], self.url_str.nameDataPath), header=False, index=False)
         print(df)
 
 
