@@ -1,6 +1,6 @@
 import os, urllib
 
-class File_wr:
+class FileWr:
 
     def fileWrite (self, path, str):
         modeType = 'a'
@@ -21,5 +21,4 @@ class File_wr:
             print(e)
 
     def download_file_to_dir(self, url, dst_dir):
-        url = url.replace(' ', '%20')
         self.download_file(url, os.path.join(dst_dir, os.path.basename(url)))

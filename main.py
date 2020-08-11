@@ -1,4 +1,4 @@
-import Url_str, File_wr, MkdirDaily, time, urllib, os, glob
+import Url_str, FileWr, MkdirDaily, WebDataGet, time, urllib, os, glob
 import pandas as pd
 from pyquery import PyQuery as pq
 
@@ -8,7 +8,9 @@ class Main:
 
     mkdirDaily = MkdirDaily.MkdirDaily()
 
-    file_wr = File_wr.File_wr()
+    fileWr = FileWr.FileWr()
+
+    webDataGet = WebDataGet.WebDataGet()
 
     def getImg(self):
 
@@ -19,29 +21,14 @@ class Main:
         for url in self.urls:
             time.sleep(2)
 
-            data = pq(url)
-            data = data(self.url_str.itemGroup)('li')('a')('img')
-
-            for img in data:
-                resultItem = {}
-
-                if not pq(img).attr('src') == 'None':
-                    resultItem['alt'] = pq(img).attr('alt').strip()
-                    resultItem['img_src'] = '<img src="../img/' + pq(img).attr('src').replace(self.url_str.delImgPath, '').strip() + '">'
-                    resultItem['img'] = pq(img).attr('src').strip()
-
-                    resultItems.append(resultItem)
-
-                    print(resultItem)
-
-                    self.file_wr.download_file_to_dir(resultItem['img'], dirPaths[1])
+            tempAry = self.webDataGet.getData(url, dirPaths[1])
+            resultItems.extend(tempAry)
 
         df = pd.DataFrame(resultItems)
-        df.to_html(os.path.join(dirPaths[0], self.url_str.nameHtmlPath), escape=False)
-        df = df.drop('img_src', axis=1)
+        df = df.drop('imgSrc', axis=1)
+        df.to_html(os.path.join(dirPaths[0], self.url_str.nameHtmlPath), escape=False, index=False)
+        df = df.drop('toHtml', axis=1)
         df.to_csv(os.path.join(dirPaths[0], self.url_str.nameDataPath), header=False, index=False)
-        print(df)
-
 
 main = Main()
 main.getImg()
