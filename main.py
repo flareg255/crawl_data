@@ -18,14 +18,13 @@ class Main:
 
         resultItems = []
 
-        for url in self.urls:
+        for i, url in enumerate(self.urls):
             time.sleep(2)
 
             tempAry = self.webDataGet.getData(url, dirPaths[1])
             resultItems.extend(tempAry)
 
         df = pd.DataFrame(resultItems)
-        df = df.drop('imgSrc', axis=1)
         df.to_html(os.path.join(dirPaths[0], self.url_str.nameHtmlPath), escape=False, index=False)
         df = df.drop('toHtml', axis=1)
         df.to_csv(os.path.join(dirPaths[0], self.url_str.nameDataPath), header=False, index=False)
